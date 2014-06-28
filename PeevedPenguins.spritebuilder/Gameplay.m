@@ -19,6 +19,12 @@
     //tell the scene to accept touches
     self.userInteractionEnabled = TRUE;
 }
+
+//called on every touch of the scene
+-(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
+    [self launchPenguin];
+}
+
 -(void)launchPenguin{
     //loads the Penguin.ccb we set up in Spritebuilder
     CCNode * penguin = [CCBReader load:@"Penguin"];
