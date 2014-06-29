@@ -14,6 +14,8 @@
     CCNode * _levelNode;
     CCNode * _contentNode;
     CCNode * _pullbackNode;
+    CCNode * _mouseJointNode;
+    CCPhysicsJoint * _mouseJoint;
     
     
 
@@ -32,14 +34,56 @@
     
     //code to prevent objects from colliding with invisible nodes
     _pullbackNode.physicsBody.collisionMask = @[];
-    
+    _mouseJointNode.physicsBody.collisionMask = @[];
     
 }
 
 //called on every touch of the scene
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
-    [self launchPenguin];
+    //Testing just to launch the penguin
+    //[self launchPenguin];
+    
+    CGPoint touchLocation = [touch locationInNode:_contentNode];
+    
+    //Start dragging the catapult arm when the touch occurs on the catapult arm
+    if(CGRectContainsPoint([_catapultArm boundingBox], touchLocation)){
+        
+        //move the mouseJointNode to the touch position
+        _mouseJointNode.position =touchLocation;
+        
+        //setup a spring joint between the mouseJointNode and the catapultArm
+        _mouseJoint = [CCPhysicsJoint connectedSpringJointWithBodyA:_mouseJointNode.physicsBody bodyB:_catapultArm.physicsBody anchorA:ccp(0,0) anchorB:ccp(34,138) restLength:0.f stiffness:3000.f damping:150.f];
+        
+        
+    }
 }
+
+-(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event{
+    //whenever the touch moves, update the position of the _mouseJointNode to the touch location
+    CGPoint touchLocation = [touch locationInNode:_contentNode];
+    
+    _mouseJointNode.position= touchLocation;
+}
+
+-(void)releaseCatapult{
+    if (_mouseJoint != nil) {
+        //release the joint and lets the catapult arm snap back
+        [_mouseJoint invalidate];
+        _mouseJoint = nil;
+    }
+}
+
+-(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event{
+    //when the touch ends call release catapult
+    [self releaseCatapult];
+}
+
+-(void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event{
+    //when the touch goes off the screen release the catapult arm
+    [self releaseCatapult];
+}
+
+
 -(void)retry{
     //reload the level
     [[CCDirector sharedDirector]replaceScene:[CCBReader loadAsScene:@"Gameplay"]];
