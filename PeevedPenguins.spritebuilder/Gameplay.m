@@ -12,6 +12,7 @@
     CCPhysicsNode * _physicsNode;
     CCNode * _catapultArm;
     CCNode * _levelNode;
+    CCNode * _contentNode;
     
     
 
@@ -30,7 +31,10 @@
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
     [self launchPenguin];
 }
-
+-(void)retry{
+    //reload the level
+    [[CCDirector sharedDirector]replaceScene:[CCBReader loadAsScene:@"Gameplay"]];
+}
 -(void)launchPenguin{
     //loads the Penguin.ccb we set up in Spritebuilder
     CCNode * penguin = [CCBReader load:@"Penguin"];
@@ -49,6 +53,6 @@
     //ensure the followed object is in the visible area when starting
     self.position = ccp(0,0);
     CCActionFollow *follow = [CCActionFollow actionWithTarget:penguin worldBoundary:self.boundingBox];
-    [self runAction:follow];
+    [_contentNode runAction:follow];
 }
 @end
