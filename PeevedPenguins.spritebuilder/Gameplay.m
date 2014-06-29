@@ -25,6 +25,8 @@
     //load the first level
     CCScene *level = [CCBReader loadAsScene:@"Levels/Level1"];
     [_levelNode addChild:level];
+    //visualize the physics bodies and joints
+    _physicsNode.debugDraw = TRUE;
 }
 
 //called on every touch of the scene
