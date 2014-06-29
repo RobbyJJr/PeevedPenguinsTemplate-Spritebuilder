@@ -24,6 +24,10 @@
 }
 //Is called when the ccb file has completed loading
 -(void) didLoadFromCCB{
+    
+    //sign up as the collision delegate of the physics node
+    _physicsNode.collisionDelegate = self;
+    
     //tell the scene to accept touches
     self.userInteractionEnabled = TRUE;
     
@@ -138,5 +142,10 @@
     self.position = ccp(0,0);
     CCActionFollow *follow = [CCActionFollow actionWithTarget:penguin worldBoundary:self.boundingBox];
     [_contentNode runAction:follow];
+    
+}
+
+-(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair seal:(CCNode *)nodeA wildcard:(CCNode *)nodeB{
+    CCLOG(@"Something collided with a seal");
 }
 @end
