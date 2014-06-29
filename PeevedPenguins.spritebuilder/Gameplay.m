@@ -13,6 +13,7 @@
     CCNode * _catapultArm;
     CCNode * _levelNode;
     CCNode * _contentNode;
+    CCNode * _pullbackNode;
     
     
 
@@ -25,8 +26,14 @@
     //load the first level
     CCScene *level = [CCBReader loadAsScene:@"Levels/Level1"];
     [_levelNode addChild:level];
+    
     //visualize the physics bodies and joints
     //_physicsNode.debugDraw = TRUE;
+    
+    //code to prevent objects from colliding with invisible nodes
+    _pullbackNode.physicsBody.collisionMask = @[];
+    
+    
 }
 
 //called on every touch of the scene
