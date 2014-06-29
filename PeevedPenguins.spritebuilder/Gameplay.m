@@ -11,6 +11,8 @@
 @implementation Gameplay{
     CCPhysicsNode * _physicsNode;
     CCNode * _catapultArm;
+    CCNode * _levelNode;
+    
     
 
 }
@@ -18,6 +20,10 @@
 -(void) didLoadFromCCB{
     //tell the scene to accept touches
     self.userInteractionEnabled = TRUE;
+    
+    //load the first level
+    CCScene *level = [CCBReader loadAsScene:@"Levels/Level1"];
+    [_levelNode addChild:level];
 }
 
 //called on every touch of the scene
