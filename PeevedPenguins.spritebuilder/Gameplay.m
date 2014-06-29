@@ -54,7 +54,7 @@
         _currentPenguin = [CCBReader load:@"Penguin"];
         
         //initially position the penguin on the scoop at 34, 138.  Try to avoid magic numbers by declaring these starting positions as variables
-        CGPoint penguinPosition = [_physicsNode convertToWorldSpace:ccp(134,138)];
+        CGPoint penguinPosition = [_catapultArm convertToWorldSpace:ccp(34,138)];
         
         //transform the world position to the node space to which the penguin will be added
         _currentPenguin.position = [_physicsNode convertToNodeSpace:penguinPosition];
