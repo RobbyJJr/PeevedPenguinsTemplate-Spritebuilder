@@ -155,6 +155,9 @@
     explosion.autoRemoveOnFinish = TRUE;
     
     //place the particle effect on the seals position
+    explosion.position = seal.position;
+    
+    //add the explosion onto the same node that the seal is on (thats why it is seal.parent)
     [seal.parent addChild:explosion];
     
     //remove the destroyed seal
