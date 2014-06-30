@@ -17,12 +17,15 @@
     CCNode * _pullbackNode;
     CCNode * _mouseJointNode;
     CCPhysicsJoint * _mouseJoint;
-    CCNode * _currentPenguin;
+    Penguin * _currentPenguin;
     CCPhysicsJoint * _penguinCatapultJoint;
-    
+    CCAction * _followPenguin;
     
 
 }
+//constant minimum speed
+static const float MIN_SPEED = 5.f;
+
 //Is called when the ccb file has completed loading
 -(void) didLoadFromCCB{
     
@@ -44,6 +47,51 @@
     _mouseJointNode.physicsBody.collisionMask = @[];
     
 }
+//Update method is called every frame
+-(void)update:(CCTime)delta{
+    
+    //check to see if the current penguin has been launched before checking speed and position
+    if (_currentPenguin.launched) {
+        
+        //if speed is below the minimum, assume the penguin throw is over
+        if(ccpLength(_currentPenguin.physicsBody.velocity)<MIN_SPEED){
+        
+            //call next attempt
+            [self nextAttempt];
+            return;
+        }
+    
+        int xMin = _currentPenguin.boundingBox.origin.x;
+    
+        if (xMin <  self.boundingBox.origin.x) {
+            [self nextAttempt];
+            return;
+        }
+    
+        int xMax = xMin + _currentPenguin.boundingBox.size.width;
+    
+        if (xMax > (self.boundingBox.origin.x + self.boundingBox.size.width)) {
+            [self nextAttempt];
+            return;
+        }
+        
+    }
+    
+}
+
+//nextAttempt resets the camera back to the left of the level
+-(void)nextAttempt{
+    
+    //release the pointer to the current penguin
+    _currentPenguin= nil;
+    
+    //stop the _followPenguin action on the content node
+    [_contentNode stopAction:_followPenguin];
+    
+    //create a new action to scroll back to the catapult
+    CCActionMoveTo * actionMoveTo = [CCActionMoveTo actionWithDuration:1.f position:ccp(0,0)];
+    [_contentNode runAction:actionMoveTo];
+}
 
 //called on every touch of the scene
 -(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event{
@@ -56,7 +104,7 @@
     if(CGRectContainsPoint([_catapultArm boundingBox], touchLocation)){
         
         //create a penguin from the ccb file
-        _currentPenguin = [CCBReader load:@"Penguin"];
+        _currentPenguin = (Penguin *)[CCBReader load:@"Penguin"];
         
         //initially position the penguin on the scoop at 34, 138.  Try to avoid magic numbers by declaring these starting positions as variables
         CGPoint penguinPosition = [_catapultArm convertToWorldSpace:ccp(34,138)];
@@ -103,9 +151,12 @@
         //after the catapult arm snaps, rotation is ok
         _currentPenguin.physicsBody.allowsRotation = TRUE;
         
+        //set the launched property of the current penguin to true
+        _currentPenguin.launched= TRUE;
+        
         //follow the flying penguin
-        CCActionFollow *follow = [CCActionFollow actionWithTarget:_currentPenguin worldBoundary:self.boundingBox];
-        [_contentNode runAction:follow];
+        _followPenguin = [CCActionFollow actionWithTarget:_currentPenguin worldBoundary:self.boundingBox];
+        [_contentNode runAction:_followPenguin];
     }
 }
 
