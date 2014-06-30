@@ -37,7 +37,7 @@
     [_levelNode addChild:level];
     
     //visualize the physics bodies and joints
-    _physicsNode.debugDraw = TRUE;
+    //_physicsNode.debugDraw = TRUE;
     
     //code to prevent objects from colliding with invisible nodes
     _pullbackNode.physicsBody.collisionMask = @[];
