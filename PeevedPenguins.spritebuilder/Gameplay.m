@@ -49,7 +49,8 @@ static const float MIN_SPEED = 5.f;
             sealcount++;
         }
         childCount++;
-        
+        NSString *className = NSStringFromClass([item class]);
+        CCLOG(@"Your object is a %@",className);
     }
     CCLOG(@"SealCount = %d",sealcount);
     CCLOG(@"ChildCount = %d",childCount);
@@ -230,7 +231,7 @@ static const float MIN_SPEED = 5.f;
 }
 
 -(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair seal:(CCNode *)nodeA wildcard:(CCNode *)nodeB{
-    CCLOG(@"Something collided with a seal");
+    //CCLOG(@"Something collided with a seal");
     
     float energy = [pair totalKineticEnergy];
     
