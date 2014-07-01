@@ -45,13 +45,21 @@ static const float MIN_SPEED = 5.f;
     int sealcount = 0;
     int childCount = 0;
     for ( id item in levelChildren) {
-        if ([item isKindOfClass:[Seal class]]) {
-            sealcount++;
+        if ([item isKindOfClass:[CCNode class]]) {
+            CCNode *node = item;
+            
+            for(id NodeChild in node.children){
+                if ([NodeChild isKindOfClass:[Seal class]]) {
+                    sealcount++;
+                }
+                NSString *className = NSStringFromClass([NodeChild class]);
+                CCLOG(@"Your object is a %@",className);
+
+                childCount++;
+            }
         }
-        childCount++;
-        NSString *className = NSStringFromClass([item class]);
-        CCLOG(@"Your object is a %@",className);
-    }
+        
+            }
     CCLOG(@"SealCount = %d",sealcount);
     CCLOG(@"ChildCount = %d",childCount);
     //visualize the physics bodies and joints
