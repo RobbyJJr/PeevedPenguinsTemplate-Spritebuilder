@@ -8,6 +8,7 @@
 
 #import "Gameplay.h"
 #import "CCPhysics+ObjectiveChipmunk.h"
+#import "Seal.h"
 
 @implementation Gameplay{
     CCPhysicsNode * _physicsNode;
@@ -36,9 +37,14 @@ static const float MIN_SPEED = 5.f;
     self.userInteractionEnabled = TRUE;
     
     //load the first level
-    CCScene *level = [CCBReader loadAsScene:@"Levels/Level3"];
+    CCScene *level = [CCBReader loadAsScene:@"Levels/Level2"];
     [_levelNode addChild:level];
-    
+    NSArray *levelChildren = level.children;
+    int sealcount = 0;
+    for (Seal *seals in levelChildren) {
+        sealcount++;
+    }
+    CCLOG(@"SealCount = %d",sealcount);
     //visualize the physics bodies and joints
     //_physicsNode.debugDraw = TRUE;
     
