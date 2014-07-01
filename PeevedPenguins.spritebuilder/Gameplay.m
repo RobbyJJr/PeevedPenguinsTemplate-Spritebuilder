@@ -39,12 +39,20 @@ static const float MIN_SPEED = 5.f;
     //load the first level
     CCScene *level = [CCBReader loadAsScene:@"Levels/Level1"];
     [_levelNode addChild:level];
+    
+    //Just some code to count how many seals there are on the level
     NSArray *levelChildren = level.children;
     int sealcount = 0;
-    for (Seal *seals in levelChildren) {
-        sealcount++;
+    int childCount = 0;
+    for ( id item in levelChildren) {
+        if ([item isKindOfClass:[Seal class]]) {
+            sealcount++;
+        }
+        childCount++;
+        
     }
     CCLOG(@"SealCount = %d",sealcount);
+    CCLOG(@"ChildCount = %d",childCount);
     //visualize the physics bodies and joints
     //_physicsNode.debugDraw = TRUE;
     
