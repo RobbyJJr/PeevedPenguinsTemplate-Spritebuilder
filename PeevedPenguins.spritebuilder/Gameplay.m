@@ -79,8 +79,8 @@ static const float MIN_SPEED = 5.f;
     NSString *currentScene;
     for (id item in levelNodeChildren) {
         if ([item isKindOfClass:[CCScene class]]) {
-            currentScene = [(CCScene*)item name];
-            CCLOG(@"The current scene is %@",currentScene);
+            currentScene = [item description];
+            CCLOG(@"The current scene description is %@",currentScene);
         }
     }
     //add one to the level node name
