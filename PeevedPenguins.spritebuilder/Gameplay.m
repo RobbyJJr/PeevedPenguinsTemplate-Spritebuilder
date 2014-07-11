@@ -22,6 +22,7 @@
     CCPhysicsJoint * _penguinCatapultJoint;
     CCAction * _followPenguin;
     int numOfSeals;
+    int currentLevel;
 
 }
 //constant minimum speed
@@ -39,30 +40,11 @@ static const float MIN_SPEED = 5.f;
     //load the first level
     CCScene *level = [CCBReader loadAsScene:@"Levels/Level1"];
     [_levelNode addChild:level];
+    currentLevel = 1;
     
-    //Just some code to count how many seals there are on the level, Could this be its own method to check for the number of seals left, assign points and end the level?
-    NSArray *levelChildren = level.children;
-    int sealcount = 0;
-    int childCount = 0;
-    for ( id item in levelChildren) {
-        if ([item isKindOfClass:[CCNode class]]) {
-            CCNode *node = item;
-            
-            for(id NodeChild in node.children){
-                if ([NodeChild isKindOfClass:[Seal class]]) {
-                    sealcount++;
-                }
-                NSString *className = NSStringFromClass([NodeChild class]);
-                CCLOG(@"Your object is a %@",className);
-
-                childCount++;
-            }
-        }
-        
-    }
-    numOfSeals = sealcount;
-    CCLOG(@"SealCount = %d",sealcount);
-    CCLOG(@"ChildCount = %d",childCount);
+    numOfSeals =[self countSeals];
+    //CCLOG(@"SealCount = %d",sealcount);
+    //CCLOG(@"ChildCount = %d",childCount);
     //visualize the physics bodies and joints
     //_physicsNode.debugDraw = TRUE;
     
@@ -73,24 +55,48 @@ static const float MIN_SPEED = 5.f;
 }
 //method to load the next level when the previous level is completed
 -(void)LoadNextLevel{
-    //get the name of the level node
-    NSArray *levelNodeChildren = _levelNode.children;
-    //find the child that is a CCScene and assign the name to a string
-    NSString *currentScene;
-    int scenecount = 0;
-    for (id item in levelNodeChildren) {
-        
-        if ([item isKindOfClass:[CCScene class]]) {
-            currentScene = [item description];
-            scenecount++;
-            CCLOG(@"The current scene description is %@",currentScene);
-        }
-    }
-    CCLOG(@"There are %i scenes in the levelNodeChildren", scenecount);
-    //add one to the level node name
+    //create the name of the current and new level node
+    
+    NSString *oldlevelPath =  [NSString stringWithFormat:@"Levels/Level%d",currentLevel];
+    NSString *newlevelPath =  [NSString stringWithFormat:@"Levels/Level%d",++currentLevel];
+    
+    //create temporary levels to remove and add
+    CCScene *oldLevel = [CCBReader loadAsScene:oldlevelPath];
+    CCScene *newLevel = [CCBReader loadAsScene:newlevelPath];
     //remove the current level node
+    [_levelNode removeChild:oldLevel cleanup:YES];
     //add the new level node
+    [_levelNode addChild:newLevel];
+    //count the new seals
+    numOfSeals  = [self countSeals];
+    
 }
+-(int)countSeals{
+    //Just some code to count how many seals there are on the level, Could this be its own method to check for the number of seals left, assign points and end the level?
+    CCNode *level = _levelNode.children.firstObject;
+    int sealcount = 0;
+    //int childCount = 0;
+    
+        if ([level isKindOfClass:[CCNode class]]) {
+            CCNode *node = level;
+            
+            for(id NodeChild in node.children){
+                if ([NodeChild isKindOfClass:[Seal class]]) {
+                    sealcount++;
+                    CCLOG(@"SealCount = %d",sealcount);
+                }
+                NSString *className = NSStringFromClass([NodeChild class]);
+                CCLOG(@"Your object is a %@",className);
+                
+                //childCount++;
+            }
+            
+        }
+    return sealcount;
+}
+
+
+
 //Update method is called every frame
 -(void)update:(CCTime)delta{
     if (numOfSeals > 0) {
