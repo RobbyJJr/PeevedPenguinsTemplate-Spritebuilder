@@ -21,7 +21,7 @@
     Penguin * _currentPenguin;
     CCPhysicsJoint * _penguinCatapultJoint;
     CCAction * _followPenguin;
-    
+    int numOfSeals;
 
 }
 //constant minimum speed
@@ -40,7 +40,7 @@ static const float MIN_SPEED = 5.f;
     CCScene *level = [CCBReader loadAsScene:@"Levels/Level1"];
     [_levelNode addChild:level];
     
-    //Just some code to count how many seals there are on the level
+    //Just some code to count how many seals there are on the level, Could this be its own method to check for the number of seals left, assign points and end the level?
     NSArray *levelChildren = level.children;
     int sealcount = 0;
     int childCount = 0;
@@ -59,7 +59,8 @@ static const float MIN_SPEED = 5.f;
             }
         }
         
-            }
+    }
+    numOfSeals = sealcount;
     CCLOG(@"SealCount = %d",sealcount);
     CCLOG(@"ChildCount = %d",childCount);
     //visualize the physics bodies and joints
@@ -70,36 +71,57 @@ static const float MIN_SPEED = 5.f;
     _mouseJointNode.physicsBody.collisionMask = @[];
     
 }
+//method to load the next level when the previous level is completed
+-(void)LoadNextLevel{
+    //get the name of the level node
+    NSArray *levelNodeChildren = _levelNode.children;
+    //find the child that is a CCScene and assign the name to a string
+    NSString *currentScene;
+    for (id item in levelNodeChildren) {
+        if ([item isKindOfClass:[CCScene class]]) {
+            currentScene = [(CCScene*)item name];
+            CCLOG(@"The current scene is %@",currentScene);
+        }
+    }
+    //add one to the level node name
+    //remove the current level node
+    //add the new level node
+}
 //Update method is called every frame
 -(void)update:(CCTime)delta{
-    
-    //check to see if the current penguin has been launched before checking speed and position
-    if (_currentPenguin.launched) {
+    if (numOfSeals > 0) {
         
-        //if speed is below the minimum, assume the penguin throw is over
-        if(ccpLength(_currentPenguin.physicsBody.velocity)<MIN_SPEED){
+    
+        //check to see if the current penguin has been launched before checking speed and position
+        if (_currentPenguin.launched) {
         
-            //call next attempt
-            [self nextAttempt];
-            return;
-        }
-    
-        int xMin = _currentPenguin.boundingBox.origin.x;
-    
-        if (xMin <  self.boundingBox.origin.x) {
-            [self nextAttempt];
-            return;
-        }
-    
-        int xMax = xMin + _currentPenguin.boundingBox.size.width;
-    
-        if (xMax > (self.boundingBox.origin.x + self.boundingBox.size.width)) {
-            [self nextAttempt];
-            return;
-        }
+            //if speed is below the minimum, assume the penguin throw is over
+            if(ccpLength(_currentPenguin.physicsBody.velocity)<MIN_SPEED){
         
+                //call next attempt
+                [self nextAttempt];
+                return;
+            }
+    
+            int xMin = _currentPenguin.boundingBox.origin.x;
+    
+            if (xMin <  self.boundingBox.origin.x) {
+                [self nextAttempt];
+                return;
+            }
+    
+            int xMax = xMin + _currentPenguin.boundingBox.size.width;
+    
+            if (xMax > (self.boundingBox.origin.x + self.boundingBox.size.width)) {
+                [self nextAttempt];
+                return;
+            }
+        
+        }
     }
-    
+    else{
+        [self LoadNextLevel];
+    }
 }
 
 //nextAttempt resets the camera back to the left of the level
@@ -236,6 +258,7 @@ static const float MIN_SPEED = 5.f;
     
     //remove the destroyed seal
     [seal removeFromParent];
+    numOfSeals--;
 }
 
 -(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair seal:(CCNode *)nodeA wildcard:(CCNode *)nodeB{
