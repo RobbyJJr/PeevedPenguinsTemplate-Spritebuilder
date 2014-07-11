@@ -81,7 +81,7 @@ static const float MIN_SPEED = 5.f;
         
     
         if ([levelChild isKindOfClass:[CCNode class]]) {
-            CCNode *node = level;
+            CCNode *node = levelChild;
             
             for(id NodeChild in node.children){
                 if ([NodeChild isKindOfClass:[Seal class]]) {
