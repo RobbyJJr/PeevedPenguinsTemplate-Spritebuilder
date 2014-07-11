@@ -74,7 +74,7 @@ static const float MIN_SPEED = 5.f;
 -(int)countSeals{
     //Just some code to count how many seals there are on the level, Could this be its own method to check for the number of seals left, assign points and end the level?
     CCLOG(@"There are %lu children in the _leveNode", (unsigned long)_levelNode.children.count);
-    CCScene *level = _levelNode.children.firstObject;
+    CCScene *level = _levelNode.children[0];
     int sealcount = 0;
     //int childCount = 0;
     for (id levelChild in level.children) {
