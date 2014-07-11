@@ -111,7 +111,7 @@ static const float MIN_SPEED = 5.f;
         
             //if speed is below the minimum, assume the penguin throw is over
             if(ccpLength(_currentPenguin.physicsBody.velocity)<MIN_SPEED){
-        
+                
                 //call next attempt
                 [self nextAttempt];
                 return;
