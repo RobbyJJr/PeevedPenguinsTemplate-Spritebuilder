@@ -77,12 +77,16 @@ static const float MIN_SPEED = 5.f;
     NSArray *levelNodeChildren = _levelNode.children;
     //find the child that is a CCScene and assign the name to a string
     NSString *currentScene;
+    int scenecount = 0;
     for (id item in levelNodeChildren) {
+        
         if ([item isKindOfClass:[CCScene class]]) {
             currentScene = [item description];
+            scenecount++;
             CCLOG(@"The current scene description is %@",currentScene);
         }
     }
+    CCLOG(@"There are %i scenes in the levelNodeChildren", scenecount);
     //add one to the level node name
     //remove the current level node
     //add the new level node
