@@ -103,7 +103,7 @@ static const float MIN_SPEED = 5.f;
 
 //Update method is called every frame
 -(void)update:(CCTime)delta{
-    if (numOfSeals > 0) {
+    //if (numOfSeals > 0) {
         
     
         //check to see if the current penguin has been launched before checking speed and position
@@ -132,10 +132,10 @@ static const float MIN_SPEED = 5.f;
             }
         
         }
-    }
-    else{
-        [self LoadNextLevel];
-    }
+    //}
+    //else{
+    //    [self LoadNextLevel];
+    //}
 }
 
 //nextAttempt resets the camera back to the left of the level
